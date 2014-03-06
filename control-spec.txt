@@ -2431,21 +2431,29 @@
 
   The syntax is:
 
-    "650" SP "HS_DESC" SP Action SP HSAddress SP AuthType SP HsDir [SP DescriptorID]
+    "650" SP "HS_DESC" SP Action SP HSAddress SP HsDir [SP AUTH_TYPE=AuthType]
+         [SP DESC_ID=DescriptorID] [SP SEC_VALID=SecondsValid]
 
-    Action =  "REQUESTED" / "RECEIVED" / "IGNORE" / "FAILED"
+    Action =  "REQUESTED" / "RECEIVED" / "IGNORE" / "FAILED" / "UPLOAD"
     HSAddress = 16*Base32Character
     AuthType = "NO_AUTH" / "BASIC_AUTH" / "STEALTH_AUTH" / "UNKNOWN"
     HsDir = LongName / Fingerprint
     DescriptorID = 32*Base32Character
+    SecondsValid = 1*DIGIT
 
-    These events will be triggerred when required HiddenService descriptor is
-    not found in the cache and a fetch from network is performed.
+    "REQUIRED", "RECEIVED", "IGNORE" and "FAILED" are client actions. They
+    will be triggered when required HiddenService descriptor is not found in
+    the cache and a fetch from network is performed.
 
     If we already had the v0 descriptor, the newly fected v2 descriptor will be
     ignored and a "HS_DESC" event with "IGNORE" action will be generated.
 
-    For HsDir, LongName is always prefered. If HsDir cannot be found in node
+    "UPLOAD" is a server side action, which get triggered whenever
+    HiddenService has uploaded a descriptor to a HiddenService descriptor
+    directory. SecondsValid indicates how long this descriptor will remain
+    valid.
+
+    For HsDir, LongName is always preferred. If HsDir cannot be found in node
     list at the time event is sent, Fingerprint will be used instead.
 
 
